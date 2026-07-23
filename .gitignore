@@ -1,0 +1,9 @@
+node_modules/
+dist/
+.astro/
+.generated/
+.vercel/
+.env
+src/content/docs/
+src/content/i18n/
+

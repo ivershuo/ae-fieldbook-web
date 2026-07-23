@@ -1,0 +1,44 @@
+---
+import DefaultSocialIcons from '@astrojs/starlight/components/SocialIcons.astro';
+import versions from '../../.generated/versions.json';
+
+interface Edition {
+  label: string;
+  slug: string;
+  ref: string;
+}
+
+const editions = (versions as { versions: Edition[] }).versions;
+const pathname = Astro.url.pathname;
+const match = pathname.match(/^\/(en|zh-cn)(?:\/v\/([^/]+))?(\/.*)?$/);
+const lang = match?.[1] ?? 'en';
+const selected = match?.[2] ?? 'current';
+const suffix = match?.[3] ?? '/';
+---
+
+<div class="fieldbook-header-tools">
+  <label class="version-picker">
+    <span class="sr-only">Edition</span>
+    <select id="fieldbook-version" aria-label="Edition">
+      <option value={`/${lang}${suffix}`} selected={selected === 'current'}>Current</option>
+      {editions.map((version) => (
+        <option
+          value={`/${lang}/v/${version.slug}${suffix}`}
+          selected={selected === version.slug}
+        >
+          {version.label}
+        </option>
+      ))}
+    </select>
+  </label>
+  <DefaultSocialIcons />
+</div>
+
+<script>
+  const picker = document.querySelector('#fieldbook-version');
+  if (picker instanceof HTMLSelectElement) {
+    picker.addEventListener('change', () => {
+      window.location.assign(picker.value);
+    });
+  }
+</script>

@@ -1,0 +1,3 @@
+[submodule "vendor/agentic-engineering"]
+	path = vendor/agentic-engineering
+	url = https://github.com/ivershuo/agentic-engineering.git

@@ -1,0 +1,76 @@
+{
+  "sections": [
+    {
+      "slug": "foundations",
+      "items": [
+        "what-makes-a-system-ai-native",
+        "workflows-agents-and-autonomy",
+        "context-engineering",
+        "uncertainty-and-non-deterministic-software",
+        "evaluation",
+        "agent-engineering-principles"
+      ]
+    },
+    {
+      "slug": "architecture",
+      "items": [
+        "agent-control-loops",
+        "model-strategy-and-routing",
+        "context-assembly-and-management",
+        "capabilities-authority-and-execution-boundaries",
+        "state-and-memory",
+        "planning-and-task-decomposition",
+        "human-oversight-and-intervention",
+        "multi-agent-systems"
+      ]
+    },
+    {
+      "slug": "production-engineering",
+      "items": [
+        "evaluation-systems-and-quality-gates",
+        "observability-and-incident-response",
+        "reliability-recovery-and-durable-execution",
+        "security-privacy-and-guardrails",
+        "governance-risk-and-accountability",
+        "cost-latency-and-capacity",
+        "testing-change-and-release"
+      ]
+    },
+    {
+      "slug": "product-and-ux",
+      "items": [
+        "product-promise-and-task-fit",
+        "delegation-and-user-control",
+        "progress-evidence-and-trust",
+        "intervention-correction-and-recovery",
+        "workspaces-continuity-and-collaboration"
+      ]
+    },
+    {
+      "slug": "patterns-and-cases",
+      "items": [
+        "coding-and-software-engineering-agents",
+        "research-and-knowledge-work-agents",
+        "customer-support-and-service-agents",
+        "data-and-analysis-agents",
+        "business-process-and-operations-agents",
+        "cross-domain-pattern-synthesis"
+      ]
+    },
+    {
+      "slug": "field-notes",
+      "items": [
+        "model-apis-tool-calling-and-structured-outputs",
+        "agent-skill-formats-and-extensions",
+        "mcp-a2a-and-agent-interoperability",
+        "framework-and-vendor-comparisons",
+        "research-benchmarks-and-industry-developments"
+      ]
+    },
+    {
+      "slug": "project",
+      "items": ["editorial-method"]
+    }
+  ]
+}
+
