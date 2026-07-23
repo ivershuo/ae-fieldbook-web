@@ -4,6 +4,13 @@ The presentation layer for the
 [Agentic Engineering Fieldbook](https://github.com/ivershuo/agentic-engineering).
 The handbook repository remains the only content source.
 
+Start with:
+
+- [`AGENTS.md`](AGENTS.md) — repository rules and verification;
+- [`docs/WEB_PRODUCT_PLAN.md`](docs/WEB_PRODUCT_PLAN.md) — product and
+  architecture decisions;
+- [`docs/HANDOFF.md`](docs/HANDOFF.md) — current state and exact next actions.
+
 ## Local development
 
 ```bash
@@ -39,3 +46,4 @@ handbook `main` branch or a release tag changes.
 
 Configure `versions.json` with the release tags that should remain visible.
 
+Set `SITE_URL` to the final production origin before publishing.
