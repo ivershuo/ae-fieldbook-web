@@ -119,11 +119,6 @@ function buildFrontmatter(data, pathWithinLanguage, options) {
           icon: 'right-arrow',
           variant: 'primary',
         },
-        {
-          text: options.lang === 'zh-cn' ? '浏览架构' : 'Explore architecture',
-          link: `/${options.lang}/architecture/`,
-          variant: 'minimal',
-        },
       ],
     };
   }

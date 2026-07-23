@@ -47,6 +47,7 @@ export default defineConfig({
     starlight({
       title: 'Agentic Engineering Fieldbook',
       description: 'Principles, patterns, and practices for AI-native systems.',
+      favicon: '/favicon.svg',
       defaultLocale: 'en',
       locales: {
         en: { label: 'English', lang: 'en' },
@@ -90,7 +91,7 @@ export default defineConfig({
       head: [
         {
           tag: 'meta',
-          attrs: { name: 'theme-color', content: '#173f35' },
+          attrs: { name: 'theme-color', content: '#315f86' },
         },
         {
           tag: 'meta',

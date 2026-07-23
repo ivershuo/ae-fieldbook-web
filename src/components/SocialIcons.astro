@@ -14,9 +14,56 @@ const match = pathname.match(/^\/(en|zh-cn)(?:\/v\/([^/]+))?(\/.*)?$/);
 const lang = match?.[1] ?? 'en';
 const selected = match?.[2] ?? 'current';
 const suffix = match?.[3] ?? '/';
+const isChinese = lang === 'zh-cn';
+const { hasSidebar, toc } = Astro.locals.starlightRoute;
+const leftLabel = isChinese ? '收起或展开左侧目录' : 'Collapse or expand left navigation';
+const rightLabel = isChinese ? '收起或展开右侧页内目录' : 'Collapse or expand page outline';
 ---
 
+<script is:inline>
+  try {
+    if (localStorage.getItem('fieldbook-left-nav') === 'collapsed') {
+      document.documentElement.dataset.leftNavCollapsed = '';
+    }
+    if (localStorage.getItem('fieldbook-right-nav') === 'collapsed') {
+      document.documentElement.dataset.rightNavCollapsed = '';
+    }
+  } catch {}
+</script>
+
 <div class="fieldbook-header-tools">
+  <div class="reading-layout-controls" aria-label={isChinese ? '阅读布局' : 'Reading layout'}>
+    {hasSidebar && (
+      <button
+        type="button"
+        class="layout-toggle"
+        data-layout-toggle="left"
+        aria-label={leftLabel}
+        title={leftLabel}
+      >
+        <svg aria-hidden="true" viewBox="0 0 24 24">
+          <rect x="3" y="4" width="18" height="16" rx="2" fill="none" stroke="currentColor" stroke-width="1.8"></rect>
+          <path d="M9 4v16" fill="none" stroke="currentColor" stroke-width="1.8"></path>
+          <path class="collapse-arrow" d="m7 9-3 3 3 3" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8"></path>
+        </svg>
+      </button>
+    )}
+    {toc && (
+      <button
+        type="button"
+        class="layout-toggle right-toggle"
+        data-layout-toggle="right"
+        aria-label={rightLabel}
+        title={rightLabel}
+      >
+        <svg aria-hidden="true" viewBox="0 0 24 24">
+          <rect x="3" y="4" width="18" height="16" rx="2" fill="none" stroke="currentColor" stroke-width="1.8"></rect>
+          <path d="M15 4v16" fill="none" stroke="currentColor" stroke-width="1.8"></path>
+          <path class="collapse-arrow" d="m17 9 3 3-3 3" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8"></path>
+        </svg>
+      </button>
+    )}
+  </div>
   <label class="version-picker">
     <span class="sr-only">Edition</span>
     <select id="fieldbook-version" aria-label="Edition">
@@ -35,6 +82,36 @@ const suffix = match?.[3] ?? '/';
 </div>
 
 <script>
+  type NavigationSide = 'left' | 'right';
+
+  const navigationStorageKeys = {
+    left: 'fieldbook-left-nav',
+    right: 'fieldbook-right-nav',
+  } as const;
+
+  function navigationAttribute(side: NavigationSide): 'data-left-nav-collapsed' | 'data-right-nav-collapsed' {
+    return side === 'left' ? 'data-left-nav-collapsed' : 'data-right-nav-collapsed';
+  }
+
+  function updateLayoutButton(side: NavigationSide): void {
+    const collapsed = document.documentElement.hasAttribute(navigationAttribute(side));
+    document.querySelectorAll(`[data-layout-toggle="${side}"]`).forEach((button) => {
+      button.setAttribute('aria-pressed', String(collapsed));
+    });
+  }
+
+  document.querySelectorAll<HTMLElement>('[data-layout-toggle]').forEach((button) => {
+    const side = button.dataset.layoutToggle as NavigationSide;
+    updateLayoutButton(side);
+    button.addEventListener('click', () => {
+      const attribute = navigationAttribute(side);
+      const collapsed = !document.documentElement.hasAttribute(attribute);
+      document.documentElement.toggleAttribute(attribute, collapsed);
+      localStorage.setItem(navigationStorageKeys[side], collapsed ? 'collapsed' : 'expanded');
+      updateLayoutButton(side);
+    });
+  });
+
   const picker = document.querySelector('#fieldbook-version');
   if (picker instanceof HTMLSelectElement) {
     picker.addEventListener('change', () => {
@@ -42,3 +119,53 @@ const suffix = match?.[3] ?? '/';
     });
   }
 </script>
+
+<style>
+  .reading-layout-controls {
+    display: flex;
+    gap: 0.2rem;
+  }
+
+  .layout-toggle {
+    display: grid;
+    width: 2rem;
+    height: 2rem;
+    padding: 0.35rem;
+    place-items: center;
+    border: 1px solid transparent;
+    border-radius: 0.35rem;
+    background: transparent;
+    color: var(--sl-color-gray-2);
+    cursor: pointer;
+  }
+
+  .layout-toggle:hover,
+  .layout-toggle:focus-visible,
+  .layout-toggle[aria-pressed='true'] {
+    border-color: var(--sl-color-gray-4);
+    background: var(--sl-color-gray-6);
+    color: var(--sl-color-white);
+  }
+
+  .layout-toggle:focus-visible {
+    outline: 2px solid var(--sl-color-accent);
+    outline-offset: 2px;
+  }
+
+  .layout-toggle svg {
+    width: 1.2rem;
+    height: 1.2rem;
+  }
+
+  :global([data-left-nav-collapsed]) [data-layout-toggle='left'] .collapse-arrow,
+  :global([data-right-nav-collapsed]) [data-layout-toggle='right'] .collapse-arrow {
+    transform: rotate(180deg);
+    transform-origin: center;
+  }
+
+  @media (max-width: 71.999rem) {
+    .right-toggle {
+      display: none;
+    }
+  }
+</style>

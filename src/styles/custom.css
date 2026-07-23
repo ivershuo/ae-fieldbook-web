@@ -1,35 +1,35 @@
 @import url('https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Instrument+Serif:ital@0;1&family=Inter:wght@400;500;600;700&display=swap');
 
 :root {
-  --sl-font: 'Inter', system-ui, sans-serif;
+  --sl-font: 'Inter', 'Noto Sans SC', 'PingFang SC', 'Microsoft YaHei', system-ui, sans-serif;
   --sl-font-mono: 'DM Mono', ui-monospace, monospace;
-  --sl-color-accent-low: #d7e7df;
-  --sl-color-accent: #1e6651;
-  --sl-color-accent-high: #10372d;
-  --sl-color-white: #17211e;
-  --sl-color-gray-1: #2f3c38;
-  --sl-color-gray-2: #53605c;
-  --sl-color-gray-3: #7b8581;
-  --sl-color-gray-4: #c8cec9;
-  --sl-color-gray-5: #e5e8e2;
-  --sl-color-gray-6: #f0f0e9;
-  --sl-color-black: #faf9f4;
+  --sl-color-accent-low: #dce8f2;
+  --sl-color-accent: #315f86;
+  --sl-color-accent-high: #183b59;
+  --sl-color-white: #20252b;
+  --sl-color-gray-1: #343b44;
+  --sl-color-gray-2: #58616d;
+  --sl-color-gray-3: #7d8691;
+  --sl-color-gray-4: #c7ccd2;
+  --sl-color-gray-5: #e4e6e9;
+  --sl-color-gray-6: #f1f2f3;
+  --sl-color-black: #fbfaf7;
   --sl-content-width: 48rem;
   --sl-sidebar-width: 18rem;
 }
 
 :root[data-theme='dark'] {
-  --sl-color-accent-low: #153c31;
-  --sl-color-accent: #75c5a7;
-  --sl-color-accent-high: #d7f4e9;
-  --sl-color-white: #f3f2ea;
-  --sl-color-gray-1: #d5d9d3;
-  --sl-color-gray-2: #a7b0aa;
-  --sl-color-gray-3: #77827d;
-  --sl-color-gray-4: #4c5752;
-  --sl-color-gray-5: #2c3632;
-  --sl-color-gray-6: #202925;
-  --sl-color-black: #151c19;
+  --sl-color-accent-low: #193247;
+  --sl-color-accent: #8eb8dc;
+  --sl-color-accent-high: #e0effc;
+  --sl-color-white: #f1f3f5;
+  --sl-color-gray-1: #d6dae0;
+  --sl-color-gray-2: #aab1ba;
+  --sl-color-gray-3: #7f8995;
+  --sl-color-gray-4: #4d5662;
+  --sl-color-gray-5: #303741;
+  --sl-color-gray-6: #222831;
+  --sl-color-black: #171b21;
 }
 
 body {
@@ -62,18 +62,19 @@ body {
 }
 
 .sl-markdown-content {
-  font-family: 'Instrument Serif', Georgia, serif;
-  font-size: 1.18rem;
-  line-height: 1.75;
-}
-
-html[lang='en'] :is(.hero h1, .content-panel h1, .sl-markdown-content) {
-  font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-}
-
-html[lang='en'] .sl-markdown-content {
+  font-family: var(--sl-font);
   font-size: 1.05rem;
-  line-height: 1.72;
+  line-height: 1.76;
+}
+
+html[lang='en'] :is(.hero h1, .content-panel h1),
+html[lang='zh-CN'] .content-panel h1 {
+  font-family: var(--sl-font);
+}
+
+html[lang='zh-CN'] .sl-markdown-content {
+  letter-spacing: 0.01em;
+  line-height: 1.85;
 }
 
 .sl-markdown-content :is(h2, h3, h4, table, pre, code) {
@@ -86,8 +87,29 @@ html[lang='en'] .sl-markdown-content {
 }
 
 .sl-markdown-content blockquote {
-  border-inline-start-color: #c7603b;
+  border-inline-start-color: #b56b3c;
   color: var(--sl-color-gray-2);
+}
+
+@media (min-width: 50rem) {
+  html[data-left-nav-collapsed] {
+    --sl-content-inline-start: 0rem;
+  }
+
+  html[data-left-nav-collapsed] .sidebar {
+    display: none;
+  }
+}
+
+@media (min-width: 72rem) {
+  html[data-right-nav-collapsed] .right-sidebar-container {
+    display: none;
+  }
+
+  html[data-right-nav-collapsed][data-has-sidebar][data-has-toc] .main-pane {
+    --sl-content-margin-inline: auto;
+    width: 100%;
+  }
 }
 
 .fieldbook-header-tools {
