@@ -18,6 +18,7 @@ const i18nRoot = join(siteRoot, 'src/content/i18n');
 const generatedRoot = join(siteRoot, '.generated');
 const versionsConfig = JSON.parse(readFileSync(join(siteRoot, 'versions.json'), 'utf8'));
 let orderByPath = new Map([['index.md', 0]]);
+let navigationData;
 
 function runGit(args, cwd, encoding = 'utf8') {
   return execFileSync('git', args, { cwd, encoding, stdio: ['ignore', 'pipe', 'pipe'] });
@@ -29,6 +30,7 @@ function configureNavigation(contentRoot) {
     ? contentNavigation
     : join(siteRoot, 'navigation.json');
   const navigation = JSON.parse(readFileSync(navigationPath, 'utf8'));
+  navigationData = navigation;
   orderByPath = new Map([['index.md', 0]]);
   navigation.sections.forEach((section, sectionIndex) => {
     const sectionBase = (sectionIndex + 1) * 100;
@@ -88,7 +90,10 @@ function sidebarOrder(pathWithinLanguage) {
 }
 
 function removeDuplicateTitle(body) {
-  return body.replace(/^\s*#\s+[^\n]+\n+/, '');
+  return body.replace(
+    /^(\s*(?:<!--[\s\S]*?-->\s*)*)#\s+[^\n]+\n+/,
+    '$1',
+  );
 }
 
 function buildFrontmatter(data, pathWithinLanguage, options) {
@@ -210,6 +215,10 @@ export function prepareContent() {
   writeFileSync(
     join(generatedRoot, 'versions.json'),
     JSON.stringify({ versions: versionsConfig.versions }, null, 2),
+  );
+  writeFileSync(
+    join(generatedRoot, 'navigation.json'),
+    JSON.stringify(navigationData, null, 2),
   );
   writeFileSync(
     join(generatedRoot, 'build.json'),

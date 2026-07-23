@@ -1,0 +1,34 @@
+---
+const englishPath = '/en/';
+const chinesePath = '/zh-cn/';
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width" />
+    <meta name="robots" content="noindex" />
+    <title>Agentic Engineering Fieldbook</title>
+    <script is:inline define:vars={{ englishPath, chinesePath }}>
+      const storageKey = 'fieldbook-language';
+      const stored = localStorage.getItem(storageKey);
+      const preferred =
+        stored === 'en' || stored === 'zh-cn'
+          ? stored
+          : navigator.languages?.some((language) =>
+                language.toLowerCase().startsWith('zh'),
+              )
+            ? 'zh-cn'
+            : 'en';
+      window.location.replace(preferred === 'zh-cn' ? chinesePath : englishPath);
+    </script>
+  </head>
+  <body>
+    <p>
+      Choose a language:
+      <a href={englishPath}>English</a>
+      <a href={chinesePath}>简体中文</a>
+    </p>
+  </body>
+</html>

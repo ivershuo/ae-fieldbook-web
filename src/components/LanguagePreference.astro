@@ -1,0 +1,17 @@
+---
+import DefaultLanguageSelect from '@astrojs/starlight/components/LanguageSelect.astro';
+---
+
+<DefaultLanguageSelect />
+
+<script>
+  const languageStorageKey = 'fieldbook-language';
+
+  document.querySelectorAll('starlight-lang-select select').forEach((select) => {
+    select.addEventListener('change', (event) => {
+      if (!(event.currentTarget instanceof HTMLSelectElement)) return;
+      const locale = event.currentTarget.value.match(/^\/(en|zh-cn)(?:\/|$)/)?.[1];
+      if (locale) localStorage.setItem(languageStorageKey, locale);
+    });
+  });
+</script>

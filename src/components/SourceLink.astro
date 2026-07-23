@@ -1,0 +1,59 @@
+---
+import versions from '../../.generated/versions.json';
+import navigation from '../../.generated/navigation.json';
+
+interface Edition {
+  slug: string;
+  ref: string;
+}
+
+const { lang } = Astro.locals.starlightRoute;
+const label = lang === 'zh-CN' ? '在 GitHub 上查看源文件' : 'View source on GitHub';
+const match = Astro.url.pathname.match(/^\/(en|zh-cn)(?:\/v\/([^/]+))?(?:\/(.*))?$/);
+const locale = match?.[1];
+const editionSlug = match?.[2];
+const routePath = match?.[3]?.replace(/\/$/, '') || 'index';
+const sectionSlugs = new Set(
+  (navigation as { sections: Array<{ slug: string }> }).sections.map((section) => section.slug),
+);
+const pagePath = sectionSlugs.has(routePath) ? `${routePath}/index` : routePath;
+const edition = (versions as { versions: Edition[] }).versions.find(
+  (candidate) => candidate.slug === editionSlug,
+);
+const ref = edition?.ref ?? 'main';
+const sourceUrl = locale
+  ? `https://github.com/ivershuo/agentic-engineering/blob/${ref}/content/${locale}/${pagePath}.md`
+  : undefined;
+---
+
+{
+  sourceUrl && (
+    <a href={sourceUrl} target="_blank" rel="noopener noreferrer" class="sl-flex print:hidden">
+      <svg aria-hidden="true" viewBox="0 0 24 24">
+        <path fill="currentColor" d="M12 .7a11.5 11.5 0 0 0-3.6 22.4c.6.1.8-.2.8-.6v-2.2c-3.3.7-4-1.4-4-1.4-.6-1.4-1.4-1.8-1.4-1.8-1.1-.8.1-.8.1-.8 1.2.1 1.9 1.3 1.9 1.3 1.1 1.9 2.9 1.3 3.6 1 .1-.8.4-1.3.8-1.6-2.7-.3-5.5-1.3-5.5-5.7 0-1.3.5-2.3 1.2-3.1-.1-.3-.5-1.6.1-3.1 0 0 1-.3 3.2 1.2a11 11 0 0 1 5.8 0C16.2 4.8 17.2 5 17.2 5c.6 1.6.2 2.8.1 3.1.8.8 1.2 1.8 1.2 3.1 0 4.4-2.8 5.4-5.5 5.7.4.4.8 1.1.8 2.2v3.3c0 .4.2.7.8.6A11.5 11.5 0 0 0 12 .7Z"></path>
+      </svg>
+      {label}
+    </a>
+  )
+}
+
+<style>
+  @layer starlight.core {
+    a {
+      gap: 0.5rem;
+      align-items: center;
+      color: var(--sl-color-gray-3);
+      text-decoration: none;
+    }
+
+    a:hover {
+      color: var(--sl-color-white);
+    }
+
+    svg {
+      width: 1.2em;
+      height: 1.2em;
+      flex: none;
+    }
+  }
+</style>

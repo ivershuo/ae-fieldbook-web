@@ -67,6 +67,15 @@ body {
   line-height: 1.75;
 }
 
+html[lang='en'] :is(.hero h1, .content-panel h1, .sl-markdown-content) {
+  font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+}
+
+html[lang='en'] .sl-markdown-content {
+  font-size: 1.05rem;
+  line-height: 1.72;
+}
+
 .sl-markdown-content :is(h2, h3, h4, table, pre, code) {
   font-family: var(--sl-font);
 }
@@ -115,4 +124,3 @@ body {
     display: none;
   }
 }
-
