@@ -12,7 +12,7 @@ Last reconciled: 2026-07-23
   `8541ce9b6d92d9c2fe9872e4ef4e5b738524a3ad`.
 - The website repository has no Git remote yet.
 - The website is not connected to a Vercel project yet.
-- No production domain or final `SITE_URL` has been selected.
+- The production domain and default `SITE_URL` are `https://ae.docode.org`.
 - `versions.json` is empty because the content repository did not expose a
   release tag during implementation.
 
@@ -75,10 +75,9 @@ repository, so moving the whole website directory preserves it.
 3. Add that repository as `origin` and push `main`.
 4. Import the website repository into Vercel.
 5. Set the Vercel Node version to a release compatible with `>=22.12.0`.
-6. Set the final `SITE_URL`.
+6. Set `SITE_URL` to `https://ae.docode.org` in Vercel.
 7. Create a Vercel Deploy Hook for the website `main` branch.
 8. Add the hook URL to the content repository as the
    `VERCEL_DEPLOY_HOOK_URL` Actions secret.
 9. Create the first real `fieldbook-v*` content tag and add it to
    `versions.json` only when that edition should be publicly retained.
-

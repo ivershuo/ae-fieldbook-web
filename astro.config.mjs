@@ -8,7 +8,7 @@ const versions = JSON.parse(
 const navigation = JSON.parse(
   readFileSync(new URL('./.generated/navigation.json', import.meta.url), 'utf8'),
 );
-const siteUrl = process.env.SITE_URL || 'https://agentic-engineering.vercel.app';
+const siteUrl = (process.env.SITE_URL || 'https://ae.docode.org').replace(/\/+$/, '');
 
 const versionLinks = versions.versions.map((version) => ({
   label: version.label,
