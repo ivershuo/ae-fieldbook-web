@@ -105,6 +105,13 @@ export default defineConfig({
           tag: 'meta',
           attrs: { name: 'twitter:image', content: `${siteUrl}/og.png` },
         },
+        {
+          tag: 'script',
+          attrs: {
+            src: '/_vercel/insights/script.js',
+            defer: true,
+          },
+        },
       ],
     }),
   ],
