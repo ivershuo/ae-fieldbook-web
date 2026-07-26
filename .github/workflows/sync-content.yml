@@ -87,10 +87,10 @@ jobs:
             exit 1
           fi
 
-          git diff --quiet -- vendor/agentic-engineering && {
+          if git diff --quiet -- vendor/agentic-engineering; then
             echo "The content revision changed, but the submodule pointer did not."
             exit 1
-          }
+          fi
 
       - name: Commit updated content revision
         if: steps.update.outputs.changed == 'true'
