@@ -27,7 +27,8 @@ Last reconciled: 2026-07-23
 - local offline startup, explicit content synchronization, sibling-clone content
   development, and production preview commands;
 - Vercel static build configuration;
-- content-repository workflow for calling a Vercel Deploy Hook;
+- website-owned scheduled and manual synchronization of the upstream content
+  submodule;
 - custom editorial theme and social sharing image;
 - sitemap, source links, dark mode, responsive navigation, and local outline.
 
@@ -76,8 +77,9 @@ repository, so moving the whole website directory preserves it.
 4. Import the website repository into Vercel.
 5. Set the Vercel Node version to a release compatible with `>=22.12.0`.
 6. Set `SITE_URL` to `https://ae.docode.org` in Vercel.
-7. Create a Vercel Deploy Hook for the website `main` branch.
-8. Add the hook URL to the content repository as the
-   `VERCEL_DEPLOY_HOOK_URL` Actions secret.
+7. Confirm the scheduled `Sync Fieldbook content` workflow runs successfully;
+   no token secret is required because GitHub provides its `GITHUB_TOKEN`.
+8. Optionally run the workflow manually once to verify its automated commit
+   triggers a Vercel deployment without waiting for the next schedule.
 9. Create the first real `fieldbook-v*` content tag and add it to
    `versions.json` only when that edition should be publicly retained.

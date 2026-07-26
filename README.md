@@ -106,9 +106,21 @@ preview canonical metadata is required.
 ## Deployment
 
 The site builds to `dist/` and is configured for static deployment on Vercel.
-Content repository updates can trigger a new website build through a Vercel
-Deploy Hook, allowing handbook changes to publish without copying editorial
-content into this repository.
+The website repository owns synchronization with its upstream content source:
+
+- `.github/workflows/sync-content.yml` checks the handbook repository every six
+  hours and can also be run manually from the Actions tab;
+- when the upstream `main` revision changes, the workflow builds and audits the
+  website before committing the new submodule pointer;
+- pushing that pointer to the website's default branch causes Vercel to deploy
+  the verified content revision;
+- failed validation leaves the previously published revision unchanged.
+
+The workflow uses the automatically provided `GITHUB_TOKEN` and declares only
+the `contents: write` permission it needs, so no token secret is required. An
+organization-level policy that forbids write tokens, or a default branch that
+requires pull requests, must explicitly allow this workflow or use a pull
+request-based update policy instead.
 
 Repository rules and architecture details are documented in
 [`AGENTS.md`](AGENTS.md), [`docs/WEB_PRODUCT_PLAN.md`](docs/WEB_PRODUCT_PLAN.md),

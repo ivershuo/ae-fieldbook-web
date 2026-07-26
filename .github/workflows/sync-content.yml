@@ -1,0 +1,124 @@
+name: Sync Fieldbook content
+
+on:
+  schedule:
+    # GitHub Actions cron schedules use UTC.
+    - cron: '37 */6 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: sync-fieldbook-content
+  cancel-in-progress: false
+
+jobs:
+  sync:
+    name: Update content submodule
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    steps:
+      - name: Check out website and content
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+          submodules: recursive
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: '22'
+          cache: npm
+
+      - name: Record current content revision
+        id: before
+        run: echo "sha=$(git -C vendor/agentic-engineering rev-parse HEAD)" >> "$GITHUB_OUTPUT"
+
+      - name: Fetch latest Fieldbook content
+        run: npm run content:sync
+
+      - name: Check for a content update
+        id: update
+        shell: bash
+        run: |
+          after_sha="$(git -C vendor/agentic-engineering rev-parse HEAD)"
+          echo "sha=$after_sha" >> "$GITHUB_OUTPUT"
+
+          if [[ "$after_sha" == "${{ steps.before.outputs.sha }}" ]]; then
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+            echo "Fieldbook content is already current at $after_sha."
+          else
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+            echo "Fieldbook content changed from ${{ steps.before.outputs.sha }} to $after_sha."
+          fi
+
+      - name: Install website dependencies
+        if: steps.update.outputs.changed == 'true'
+        run: npm ci
+
+      - name: Inspect updated content
+        if: steps.update.outputs.changed == 'true'
+        run: npm run content:status
+
+      - name: Build website
+        if: steps.update.outputs.changed == 'true'
+        run: npm run build
+
+      - name: Audit production dependencies
+        if: steps.update.outputs.changed == 'true'
+        run: npm audit --omit=dev
+
+      - name: Verify the pending update
+        if: steps.update.outputs.changed == 'true'
+        shell: bash
+        run: |
+          git diff --check
+
+          unexpected_changes="$(
+            git status --short |
+              awk '$2 != "vendor/agentic-engineering" { print }'
+          )"
+
+          if [[ -n "$unexpected_changes" ]]; then
+            echo "Unexpected files changed during content synchronization:"
+            echo "$unexpected_changes"
+            exit 1
+          fi
+
+          git diff --quiet -- vendor/agentic-engineering && {
+            echo "The content revision changed, but the submodule pointer did not."
+            exit 1
+          }
+
+      - name: Commit updated content revision
+        if: steps.update.outputs.changed == 'true'
+        env:
+          BEFORE_SHA: ${{ steps.before.outputs.sha }}
+          AFTER_SHA: ${{ steps.update.outputs.sha }}
+        shell: bash
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add vendor/agentic-engineering
+          git commit \
+            -m "Update Fieldbook content" \
+            -m "Content revision: ${BEFORE_SHA} -> ${AFTER_SHA}"
+          git push origin "HEAD:${GITHUB_REF_NAME}"
+
+      - name: Write workflow summary
+        if: always()
+        env:
+          BEFORE_SHA: ${{ steps.before.outputs.sha }}
+          AFTER_SHA: ${{ steps.update.outputs.sha }}
+          CHANGED: ${{ steps.update.outputs.changed }}
+        shell: bash
+        run: |
+          {
+            echo "## Fieldbook content synchronization"
+            echo
+            echo "- Previous revision: \`${BEFORE_SHA:-unknown}\`"
+            echo "- Latest revision: \`${AFTER_SHA:-unknown}\`"
+            echo "- Update detected: \`${CHANGED:-unknown}\`"
+          } >> "$GITHUB_STEP_SUMMARY"
